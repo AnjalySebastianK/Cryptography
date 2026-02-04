@@ -4,7 +4,7 @@ Hashing is a **one-way mathematical process** that transforms **any-size input d
 
 ---
 
-## a. Hashing Process & Data Integrity Role
+## 1. Hashing Process & Data Integrity Role
 
 ### The Process
 
@@ -35,7 +35,7 @@ No Match? → ❌ Tampered/Corrupted
 
 ---
 
-## b. Popular Hashing Algorithms
+## 2. Popular Hashing Algorithms
 
 | **Algorithm** | **Digest Size** | **Status** | **Security Level** | **Use Case** |
 |---------------|-----------------|------------|--------------------|--------------|
@@ -53,7 +53,7 @@ No Match? → ❌ Tampered/Corrupted
 
 ---
 
-## c. Collision Resistance (Critical Concept)
+## 3. Collision Resistance (Critical Concept)
 
 Collision = Hash(A) = Hash(B) where A ≠ B
 
@@ -69,12 +69,45 @@ Why it matters:
 - 2017: Google + CWI create first SHA-1 collision (SHAtter attack)
 - 2020+: SHA-256 remains collision-resistant
 
-## d. Salt for passwords
+### Salt for passwords
 
 hash(password + unique_salt_per_user)
 Prevents rainbow tables and identical password attacks
 
 ---
+
+## 4. Example
+
+```
+import hashlib
+
+# Original message
+message = "My name is Anjaly"
+
+# Hash using SHA-256
+hash1 = hashlib.sha256(message.encode()).hexdigest()
+
+print("Original Message:", message)
+print("SHA-256 Hash:", hash1)
+
+# Modify the message
+modified_message = "my name is Anjaly"
+
+# Hash modified message
+hash2 = hashlib.sha256(modified_message.encode()).hexdigest()
+
+print("\nModified Message:", modified_message)
+print("SHA-256 Hash:", hash2)
+
+# Integrity check
+if hash1 == hash2:
+    print("\nIntegrity Verified: No change detected")
+else:
+    print("\nIntegrity Failed: Data was modified")
+
+```
+### Output: 
+![Output](./hash.png)
 
 
 
