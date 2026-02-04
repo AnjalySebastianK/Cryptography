@@ -92,28 +92,43 @@ DES is no longer secure due to:
 Below is a simple AES-256 encryption example using the pycryptodome library.
 
 ```python
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
-import base64
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import padding
+import os
 
-# Generate key and IV
-key = get_random_bytes(32)  # AES-256
-iv = get_random_bytes(16)
+# Data
+plaintext = b"Example for AES Encryption"
 
-cipher = AES.new(key, AES.MODE_CBC, iv)
+# AES-256 Key & IV
+key = os.urandom(32)   # 256-bit key
+iv = os.urandom(16)    # 128-bit IV
 
-plaintext = b"Hello, AES encryption example!"
-# Pad plaintext to 16 bytes
-padding_length = 16 - len(plaintext) % 16
-plaintext_padded = plaintext + bytes([padding_length]) * padding_length
 
-ciphertext = cipher.encrypt(plaintext_padded)
+# Padding
+padder = padding.PKCS7(128).padder()
+padded_data = padder.update(plaintext) + padder.finalize()
 
-print("Key:", base64.b64encode(key).decode())
-print("IV:", base64.b64encode(iv).decode())
-print("Ciphertext:", base64.b64encode(ciphertext).decode())
+# Encrypt
+cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+encryptor = cipher.encryptor()
+ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+
+print("Ciphertext:", ciphertext)
+
+# Decrypt
+decryptor = cipher.decryptor()
+decrypted_padded = decryptor.update(ciphertext) + decryptor.finalize()
+
+# Remove padding
+unpadder = padding.PKCS7(128).unpadder()
+decrypted = unpadder.update(decrypted_padded) + unpadder.finalize()
+
+print("Decrypted Text:", decrypted)
+
 
 ```
+![Output](./aes.png)
 
 ---
 # 5. Summary
