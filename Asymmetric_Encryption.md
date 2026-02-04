@@ -155,6 +155,51 @@ m = 48^103 mod 143 = 9
 
 # The original message is recovered successfully.
 ```
+
+## Python RSA Encryption Example:
+
+``` python
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
+
+# 1. Generate RSA Key Pair
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048
+)
+
+public_key = private_key.public_key()
+
+# 2. Message
+message = b"Confidential Asymmetric Encryption Test"
+
+# 3. Encrypt with PUBLIC KEY
+ciphertext = public_key.encrypt(
+    message,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
+
+print("Ciphertext:", ciphertext)
+
+# 4. Decrypt with PRIVATE KEY
+decrypted = private_key.decrypt(
+    ciphertext,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
+
+print("Decrypted:", decrypted)
+
+```
+![Output](./rsa.png)
+
 ---
 
 # 2. ECC (Elliptic Curve Cryptography)
@@ -198,6 +243,7 @@ This is scalar multiplication:
 - Extremely hard to reverse (ECDLP)
 
 ---
+
 ## 2.3 ECC Encryption (ECIES-style)
 
 ### Sender Side (Encrypting)
